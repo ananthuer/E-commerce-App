@@ -1,11 +1,13 @@
-const passport = require('passport');
-const genPassword = require('../lib/passwordUtils').genPassword;
-const User = require('../models/user');
-var jwt = require('jsonwebtoken');
+const userInterface = require('../interfaces/user')
 
 
 exports.updateUser =  async (req, res, next) =>{
-    const existingUser = await User.findOne({ username: req.user.username });
+    const existingUser = await userInterface.updateUser(
+        req.user.id,
+        req.body.name,
+        req.body.location,
+        req.body.role
+    );
      
     if (existingUser == null) {
         return res.json({
@@ -13,11 +15,6 @@ exports.updateUser =  async (req, res, next) =>{
             message: "User not found"
         })
     }
-     existingUser.name = req.body.name || existingUser.name;
-     existingUser.location = req.body.location || existingUser.location;
-     existingUser.role = req.body.role || existingUser.role;
-
-   await existingUser.save()
     
 
     res.json({
@@ -27,7 +24,7 @@ exports.updateUser =  async (req, res, next) =>{
 }
 
 exports.getUser =   async(req, res, next) =>{
-    const existingUser = await User.findOne({ username: req.user.username });
+    const existingUser = await userInterface.getUser(req.user.id);
      
 
     res.json({

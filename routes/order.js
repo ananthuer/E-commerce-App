@@ -15,7 +15,7 @@ router.post('/', verifyToken, orderController.item);
 
 
 
-router.get('/:status', verifyToken, orderController.getOrder);
+router.get('/', verifyToken, orderController.getOrder);
 
 
 router.put('/:id', verifyToken, orderController.getStatus);

@@ -9,4 +9,6 @@ module.exports = (app) => {
     app.use('/cart', require('./cart'))
 
     app.use('/order', require('./order'));
+
+    app.use('/sales', require('./sales'));
 }

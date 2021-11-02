@@ -80,14 +80,47 @@ exports.item = async (req, res, next)=>{
 
 exports.getOrder =  async (req, res, next)=>{
 
+
+    let condition = {
+        userId: req.user.id
+    }
+
+    /**
+     * 
+     * db.posts.find({ //query today up to tonight
+    created_on: {
+        $gte: new Date(from_date), 
+        $lte: new Date(2012, 7, 15)
+    }
+})
+     */
+
+    const { status, from_date, to_date } = req.query;
+
+    if (status != undefined) {
+        condition["status"] = status;
+    }
+
+    if (from_date != undefined) {
+        condition["createdAt"] = {
+            $gte: new Date(from_date)
+        };
+    }
+
+    if (to_date !=undefined){
+        let toDate = new Date (to_date);
+        
+        condition["createdAt"]["$lte"]= new Date (to_date)
+    }
   
+    console.log(condition);
 
-    const orders = await Order.find({userId: req.user.id })
-
-    console.log(req.query.filters.status);
+    const orders = await Order.find(condition)
 
 
-    order.status = req.body.status;
+
+
+
 
     
 

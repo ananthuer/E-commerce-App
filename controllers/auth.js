@@ -1,7 +1,8 @@
 const { body, validationResult } = require('express-validator');
 const genPassword = require('../lib/passwordUtils').genPassword;
 
-const User = require('../models/user');
+const authInterface = require ('../interfaces/auth')
+
 var jwt = require('jsonwebtoken');
 
 
@@ -32,32 +33,13 @@ exports.register = async (req, res, next ) => {
 
     //User.findOne => user => not null => User already exists
 
-    const user = await User.findOne({username:req.body.username});
+    const newUser = await authInterface.register(req.body.username, req.body.password)
 
-  
+    res.json({
+        success: true,
+    user: newUser  
+  })
 
-   
-
-    if (user == null) { const saltHash = genPassword(req.body.password);
-
-        const salt = saltHash.salt;
-        const hash = saltHash.hash;
-    
-        const newUser = new User({
-            username: req.body.username,
-            hash: hash,
-            salt: salt
-        });
-        await newUser.save()
-        
-        res.json({
-            success: true,
-        user: newUser  
-      })
-    
-        }else{
-            return res.status(400).json({message:"User already exists"})
-        }
  
 
    

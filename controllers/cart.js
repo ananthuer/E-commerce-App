@@ -1,7 +1,8 @@
-const CartItem = require('../models/cart-item')
+
 
 const { body, validationResult } = require('express-validator');
 
+const cartInterface = require('../interfaces/cart')
 
 exports.addItemToCart = async (req, res, next)=>{
 
@@ -10,30 +11,27 @@ exports.addItemToCart = async (req, res, next)=>{
         return res.status(400).json({errors:errors.array()});
     }
 
-
-        const cart = new CartItem({
-            userId: req.user.id,
-            productId: req.body.productId,
-
-            quantity:req.body.quantity
-        });
-    
-       await cart.save()
+    const item = await cartInterface.addItemToCart(
+        req.user.id,
+        req.body.productId,
+        req.body.quantity
+        )
 
        res.json({
-           message:"cart added"
+           item
        })
     };
 
 
+
 exports.getCart = async (req, res, next)=>{
 
-    const items = await CartItem.find({userId: req.user.id}).populate('productId');
-    
 
+    const cart = await cartInterface.getCart(req.user.id)
    
 
-    if(items == null){
+
+    if(cart == null){
     
         return res.json({
             success:false,
@@ -44,41 +42,18 @@ exports.getCart = async (req, res, next)=>{
      //Total amount
      //Total discount
      //Net Total
-
-     let itemTotal = 0;
-     let discountTotal = 0;
-     let netTotal = 0;
-
-     let orderItems = [];
-
-     for (let cartItem of items) {
-
-       
-         itemTotal += cartItem.productId.price * cartItem.quantity;
-
-         discountTotal += (cartItem.productId.price - cartItem.productId.offer_price ) * cartItem.quantity;
-
-     }
-
-     netTotal = itemTotal - discountTotal;
-
      
+
     
     res.json({
         success:true,
-        data: {
-            items,
-            itemTotal,
-            discount: discountTotal,
-            netTotal
-        }
-    })
+        data: cart})
     }    
 
 
-    exports.updateCart =  async (req, res, next)=>{
+    exports.updateCart =  async (req, res )=>{
 
-        const cart = await CartItem.findById(req.params.id);
+        const cart = await cartInterface.updateCart(req.params.id, req.body.quantity)
     
         if (cart == null){
             return res.json({
@@ -86,10 +61,7 @@ exports.getCart = async (req, res, next)=>{
                 message:"not updated"
             })
         }
-    
-        cart.quantity = req.body.quantity;
-    
-        await cart.save();
+       
     
         res.json({
             success:true,
@@ -100,9 +72,10 @@ exports.getCart = async (req, res, next)=>{
 
 
      exports.deleteCart = async(req, res, next)=>{
-
-        const cart = await CartItem.findByIdAndDelete(req.params.id)
+         
+        const cart = await cartInterface.deleteCart(req.params.id)
     
+        
         res.json({
             success:true,
             message:cart

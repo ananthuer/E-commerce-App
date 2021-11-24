@@ -6,7 +6,8 @@ const { body } = require('express-validator');
 
 
 
-const authController = require('../controllers/auth')
+const authController = require('../controllers/auth');
+const EmailVerification = require('../models/email');
 
 
 // TODO
@@ -41,6 +42,23 @@ router.post('/login',
 passport.authenticate('local'),
 authController.login
 );
+
+
+router.post('/verify-email', async (req, res, next)=>{
+
+const user = await EmailVerification.findOne({emailOtp: req.body.otp, userId: req.body.id})
+
+if (user == undefined){
+    return res.json({
+        message:"invalid otp"
+    })
+}
+user.emailOtp = null;
+user.isVerified = true;
+await user.save()
+
+
+})
 
 //  passport.authenticate('local',));
  

@@ -16,6 +16,9 @@ exports.register = async(username, password) =>{
             hash: hash,
             salt: salt
         });
+
+    const  
+
         await newUser.save()
 
         return newUser;

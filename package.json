@@ -12,6 +12,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@sendgrid/mail": "^7.6.0",
     "connect-mongo": "^3.2.0",
     "crypto": "^1.0.1",
     "dotenv": "^8.6.0",
@@ -23,6 +24,7 @@
     "mongoose": "^5.13.13",
     "passport": "^0.4.1",
     "passport-local": "^1.0.0",
+    "sendgrid": "^5.2.3",
     "session": "^0.1.0"
   },
   "directories": {

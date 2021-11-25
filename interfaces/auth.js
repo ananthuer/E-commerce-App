@@ -1,6 +1,8 @@
 const User = require('../models/user');
 const genPassword = require('../lib/passwordUtils').genPassword;
 
+const EmailVerification = require('../models/email');
+
 exports.register = async(username, password) =>{
     const user = await User.findOne({username})
 
@@ -21,7 +23,7 @@ exports.register = async(username, password) =>{
 
         
 
-        await EmailVerification.save({userId: newUser.id, emailOtp: otp})
+        await EmailVerification.create({userId: newUser.id, emailOtp: otp})
 
 
         const sgMail = require('@sendgrid/mail')
@@ -41,6 +43,7 @@ exports.register = async(username, password) =>{
         await newUser.save()
 
         return newUser;
+
         
         
     
@@ -51,7 +54,7 @@ exports.register = async(username, password) =>{
 
 exports.verifyEmail =  async(emailOtp, userId)=>{
 
-    const verification = await EmailVerification.findOne({emailOtp: req.body.otp, userId: req.body.id})
+    const verification = await EmailVerification.findOne({emailOtp: emailOtp, userId: userId})
 
    verification.emailOtp = null;
    verification.isVerified = true;

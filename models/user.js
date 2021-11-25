@@ -23,7 +23,8 @@ const UserSchema = new mongoose.Schema({
     salt: String,
     name: String,
     location: String,
-    role: Number
+    role: Number,
+    isVerified: {type: Boolean, default: false}
 }, {
     toJSON: {
         transform: function (doc, ret) {

@@ -8,7 +8,7 @@ const emailSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId
     },
     emailOtp: String,
-    isVerified: {type: Boolean, default: false}
+    
 });
 
 

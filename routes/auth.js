@@ -7,7 +7,7 @@ const { body } = require('express-validator');
 
 
 const authController = require('../controllers/auth');
-const EmailVerification = require('../models/email');
+
 
 
 // TODO

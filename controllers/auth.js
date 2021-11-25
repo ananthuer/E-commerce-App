@@ -46,3 +46,12 @@ exports.register = async (req, res, next ) => {
     
    
 }
+
+
+exports.verifyEmail = async (req, res, next)=>{
+
+    const verification = await authInterface.verifyEmail(req.body.otp, req.body.userId)
+    
+
+    return verification;
+}

@@ -17,7 +17,26 @@ exports.register = async(username, password) =>{
             salt: salt
         });
 
-    const  
+        let otp = Math.floor(100000 + Math.random() * 900000);
+
+        
+
+        await EmailVerification.save({userId: newUser.id, emailOtp: otp})
+
+
+        const sgMail = require('@sendgrid/mail')
+    sgMail.setApiKey(require('../config/sendgrid').KEY)
+        const msg = {
+          to: newUser.username, // Change to your recipient
+          from: 'anandhuraina003@gmail.com', // Change to your verified sender
+          subject: 'verify your email',
+          text:`your otp is ${otp} `
+        }
+        const result = await sgMail
+          .send(msg);
+
+          console.log(result)
+
 
         await newUser.save()
 
@@ -29,3 +48,14 @@ exports.register = async(username, password) =>{
         return null;
         
 } 
+
+exports.verifyEmail =  async(emailOtp, userId)=>{
+
+    const verification = await EmailVerification.findOne({emailOtp: req.body.otp, userId: req.body.id})
+
+   verification.emailOtp = null;
+   verification.isVerified = true;
+    await verification.save()
+
+
+}

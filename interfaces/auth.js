@@ -56,9 +56,27 @@ exports.verifyEmail =  async(emailOtp, userId)=>{
 
     const verification = await EmailVerification.findOne({emailOtp: emailOtp, userId: userId})
 
-   verification.emailOtp = null;
-   verification.isVerified = true;
-    await verification.save()
+  console.log(verification)
+ 
+    if(verification == null){
+     return  null
+    }
+
+    //Updae user
+     const result = await User.findById(userId);
 
 
-}
+
+     result.isVerified = true;
+
+     await result.save()
+
+  
+        //destro
+         await EmailVerification.deleteMany({emailOtp:emailOtp, userId:userId})    
+
+    return result;
+
+  }
+
+
